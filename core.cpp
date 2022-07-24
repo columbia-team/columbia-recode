@@ -800,8 +800,10 @@ void Core::print(const std::string text, ...) {
 
 	va_end(list);
 
+	Color colorconsole = g_menu.main.config.menu_color.get();
+
 	// print to console.
-	g_csgo.m_cvar->ConsoleColorPrintf(colors::green, XOR("[dupe] "));
+	g_csgo.m_cvar->ConsoleColorPrintf(colorconsole, XOR("[ columbia ] "));
 	g_csgo.m_cvar->ConsoleColorPrintf(colors::white, buf.c_str());
 }
 
