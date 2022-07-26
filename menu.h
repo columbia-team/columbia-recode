@@ -934,7 +934,6 @@ public:
 		indicators.setup(XOR("indicators"), XOR("indicators"), { XOR("lby"), XOR("lag compensation"), XOR("ping"), XOR("mindmg override"), ("resolver override"),});
 		RegisterElement(&indicators, 1);
 
-
 		keybinds.setup(XOR("keybind status"), XOR("keybinds"));
 		RegisterElement(&keybinds, 1);
 
@@ -963,6 +962,7 @@ public:
 	Checkbox bhop;
 	Checkbox airduck;
 	Checkbox autostrafe;
+	Checkbox stamina;
 	Keybind  cstrafe;
 	Keybind  astrafe;
 	Keybind  zstrafe;
@@ -994,6 +994,9 @@ public:
 
 		autostrafe.setup(XOR("automatic strafe"), XOR("autostrafe"));
 		RegisterElement(&autostrafe);
+
+		stamina.setup(XOR("infinite stamina"), XOR("stamina"));
+		RegisterElement(&stamina);
 
 		autopeek.setup(XOR("quick peek"), XOR("autopeek"));
 		RegisterElement(&autopeek, 1);
@@ -2287,7 +2290,6 @@ public:
 
 		clantag.setup(XOR("clan-tag spammer"), XOR("clantag"));
 		RegisterElement(&clantag, 1);
-
 
 		slide_walk.setup(XOR("slide walk"), XOR("slide_walk"));
 		RegisterElement(&slide_walk, 1);

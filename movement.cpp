@@ -145,6 +145,10 @@ void Movement::Strafe() {
 
 	core.m_strafe_angles.y = math::NormalizedAngle(core.m_strafe_angles.y - delta);
 
+	//infinite stamina
+	if (!g_menu.main.movement.autostrafe.get())
+		core.m_cmd->m_buttons |= IN_BULLRUSH;
+
 	//// get our viewangle change.
 	//delta = math::NormalizedAngle( core.m_cmd->m_view_angles.y - m_old_yaw );
 

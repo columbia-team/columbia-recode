@@ -17,6 +17,28 @@ class ang_t;
 struct BoxTraceInfo_t;
 struct CBaseTrace;
 
+template<typename T>
+class Encrypted_t {
+public:
+	T* pointer;
+
+	__forceinline Encrypted_t(T* ptr) {
+		pointer = ptr;
+	}
+
+	__forceinline  T* Xor() const {
+		return  pointer;
+	}
+
+	__forceinline  T* operator-> () {
+		return Xor();
+	}
+
+	__forceinline bool IsValid() const {
+		return pointer != nullptr;
+	}
+};
+
 #include "game.h"
 #include "math.h"
 #include "vector2.h"
