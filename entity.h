@@ -881,6 +881,13 @@ public:
 		util::get_method< void(__thiscall *)(decltype(this), vec3_t *) >(this, GETEYEPOS)(this, pos);
 	}
 
+	__forceinline vec3_t get_eye_pos()
+	{
+		vec3_t out;
+		util::get_method<void(__thiscall*)(void*, vec3_t&)>(this, 277)(this, out);
+		return out;
+	}
+
 	__forceinline void ModifyEyePosition(CCSGOPlayerAnimState *state, vec3_t *pos) {
 		if (!state) {
 			return;

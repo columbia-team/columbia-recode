@@ -16,7 +16,9 @@ void Core::Watermark() {
 	if ( !g_menu.main.misc.watermark.get( ) )
 		return;
 
-	static const std::string text = "columbia | dev";
+	int ms = std::max(0, (int)std::round(core.m_latency * 1000.f));
+
+	/*static const*/ std::string text = tfm::format(XOR("columbia | dev | %i ms"), ms);
 	render::FontSize_t size = render::hud.size(text);
 
 	Color ciocan = g_menu.main.config.menu_color.get();
@@ -89,7 +91,7 @@ void Core::ClanTag()
 				case 4: {SetClanTag(XOR("colum")); break; }
 				case 5: {SetClanTag(XOR("columb")); break; }
 				case 6: {SetClanTag(XOR("columbi")); break; }
-				case 7: {SetClanTag(XOR("columbia")); break; }
+				case 7: {SetClanTag(XOR("columbia ")); break; }
 				case 8: {SetClanTag(XOR("columbia ")); break; }
 				case 9: {SetClanTag(XOR("columbia ")); break; }
 				case 10: {SetClanTag(XOR("olumbia")); break; }
