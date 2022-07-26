@@ -25,7 +25,7 @@ void Form::draw( ) {
 	/* up bar/name bar */ render::rect_filled( m_x + 5, m_y + 5, m_width - 10, 27, Color( 24, 24, 24, m_alpha ) );
 	/* outlines */ render::rect( m_x + 5, m_y + 5, m_width - 10, m_height - 10, Color( 45, 45, 45, m_alpha ) );
 	/* outlines */ render::rect( m_x + 6, m_y + 30, m_width - 12, 1, Color( 45, 45, 45, m_alpha ) );
-	/* cheat name */ render::menu_shade.string( m_x + 16 + render::menu_shade.size( "colubmia" ).m_width, m_y + 11, color, "columbia", render::ALIGN_RIGHT );
+	/* cheat name */ render::menu_shade.string( m_x + 17 + render::menu_shade.size( "colubmia" ).m_width, m_y + 11, color, "columbia", render::ALIGN_RIGHT );
 
 	render::gradient1337( m_x + 155, m_y + 30, m_width - 160, 1.5, Color( 0, 0, 0, 0 ), color );
 

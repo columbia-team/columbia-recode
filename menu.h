@@ -192,6 +192,7 @@ public:
 	Checkbox enable;
 	Checkbox edge;
 	Dropdown mode;
+	Checkbox dir_distort;
 
 	Dropdown pitch_stand;
 	Dropdown yaw_stand;
@@ -266,6 +267,9 @@ public:
 		edge.setup(XOR("edge"), XOR("edge"));
 		RegisterElement(&edge);
 
+		dir_distort.setup(XOR("distortion"), XOR("distortion"));
+		RegisterElement(&dir_distort);
+
 		mode.setup("", XOR("mode"), { XOR("stand"), XOR("walk"), XOR("air") }, false);
 		RegisterElement(&mode);
 
@@ -274,7 +278,7 @@ public:
 		pitch_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		RegisterElement(&pitch_stand);
 
-		yaw_stand.setup(XOR("yaw"), XOR("yaw_stnd"), { XOR("off"), XOR("direction"), XOR("jitter"), XOR("rotate"), XOR("random") });
+		yaw_stand.setup(XOR("yaw"), XOR("yaw_stnd"), { XOR("off"), XOR("direction"), XOR("jitter"), XOR("rotate"), XOR("random")});
 		yaw_stand.AddShowCallback(callbacks::IsAntiAimModeStand);
 		RegisterElement(&yaw_stand);
 
@@ -482,11 +486,11 @@ public:
 		color_manul_antiaim.setup(XOR("manual anti-aim color"), XOR("color_manul_antiaim"), colors::light_blue);
 		RegisterElement(&color_manul_antiaim, 1);
 
-		//draw_angles.setup(XOR("draw angles"), XOR("draw_angles"));
-		//RegisterElement(&draw_angles, 1);
+		draw_angles.setup(XOR("draw angles"), XOR("draw_angles"));
+		RegisterElement(&draw_angles, 1);
 
-		draw_angles_chams.setup(XOR("fake chams"), XOR("draw_angles_chams"));
-		RegisterElement(&draw_angles_chams, 1);
+		//draw_angles_chams.setup(XOR("fake chams"), XOR("draw_angles_chams"));
+		//RegisterElement(&draw_angles_chams, 1);
 
 		color_draw_angles_chams.setup(XOR("fake chams color"), XOR("color_draw_angles_chams"), colors::white);
 		RegisterElement(&color_draw_angles_chams, 1);
@@ -936,7 +940,7 @@ public:
 
 		tracers_circle.setup(XOR("grenade simulation circle"), XOR("tracers_circles"));
 		RegisterElement(&tracers_circle);
-		
+
 		tracers.setup(XOR("grenade simulation"), XOR("tracers"));
 		RegisterElement(&tracers, 1);
 

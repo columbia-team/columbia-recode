@@ -72,6 +72,25 @@ Weapon* Hooks::GetActiveWeapon() {
 	return g_hooks.m_GetActiveWeapon(this);
 }
 
+bool Hooks::EntityShouldInterpolate() {
+	// cast thisptr to player ptr.
+	Player* player = (Player*)this;
+
+	// let us ensure we aren't disabling interpolation on our local player model.
+	if (player == core.m_local)
+		return true;
+
+	// lets disable interpolation on these niggas.
+	if (player->IsPlayer()) {
+		return false;
+	}
+
+	// call og.
+	g_hooks.m_EntityShouldInterpolate(this);
+
+	return false;
+}
+
 void CustomEntityListener::OnEntityCreated(Entity* ent) {
 	if (ent) {
 		// player created.
@@ -92,7 +111,7 @@ void CustomEntityListener::OnEntityCreated(Entity* ent) {
 
 				// hook this on every player.
 				g_hooks.m_DoExtraBoneProcessing = vmt->add< Hooks::DoExtraBoneProcessing_t >(Player::DOEXTRABONEPROCESSING, util::force_cast(&Hooks::DoExtraBoneProcessing));
-				g_hooks.m_StandardBlendingRules = vmt->add< Hooks::StandardBlendingRules_t >(Player::STANDARDBLENDINGRULES, util::force_cast(&Hooks::StandardBlendingRules));
+				g_hooks.m_EntityShouldInterpolate = vmt->add< Hooks::EntityShouldInterpolate_t >(Player::ENTITYSHOULDINTERPOLATE, util::force_cast(&Hooks::EntityShouldInterpolate));
 				
 				// local gets special treatment.
 				if (player->index() == g_csgo.m_engine->GetLocalPlayer()) {

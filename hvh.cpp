@@ -1,5 +1,11 @@
 #include "includes.h"
 
+const float DISTORTION_SPEED = 50.f;
+const float DISTORTION_RANGE = 100.f;
+
+bool g_bSwitch = false;
+float g_flTimer = 0.f;
+
 HVH g_hvh{ };;
 
 void HVH::IdealPitch() {
@@ -638,6 +644,22 @@ void HVH::DoRealAntiAim() {
 			}
 			if (stand)
 				DistortionAntiAim(core.m_cmd);
+		}
+	}
+
+	//distortion
+	if (g_menu.main.antiaim.dir_distort.get()) {
+		float speed = (DISTORTION_SPEED * 0.01f) * 0.0625f;
+		float distortion_angle = DISTORTION_RANGE * (1.f - std::powf(1.f - g_flTimer, 2)) - (DISTORTION_RANGE * 0.5f);
+
+		core.m_cmd->m_view_angles.y += g_bSwitch ? distortion_angle : -distortion_angle;
+
+		// update timer and go back when we at the end if distortion flip
+		g_flTimer += speed;
+		if (g_flTimer >= 0.7f)
+		{
+			g_flTimer = 0.f;
+			g_bSwitch = !g_bSwitch;
 		}
 	}
 

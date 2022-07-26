@@ -448,7 +448,7 @@ void Visuals::StatusIndicators() {
 
 		Indicator_t ind{ };
 		ind.color = change > 35.f ? 0xff15c27b : Color(255, 255, 255);
-		ind.text = XOR("lby");
+		ind.text = XOR("lbu");
 		indicators.push_back(ind);
 	}
 

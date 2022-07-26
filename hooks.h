@@ -18,6 +18,7 @@ public:
 	using IN_KeyEvent_t = int(__thiscall*)(void*, int, int, const char*);
 	using FrameStageNotify_t = void(__thiscall*)(void*, Stage_t);
 	using UpdateClientSideAnimation_t = void(__thiscall*)(void*);
+	using EntityShouldInterpolate_t = bool(__thiscall*)(void*);
 	using GetActiveWeapon_t = Weapon * (__thiscall*)(void*);
 	using DoExtraBoneProcessing_t = void(__thiscall*)(void*, int, int, int, int, int, int);
 	using BuildTransformations_t = void(__thiscall*)(void*, int, int, int, int, int, int);
@@ -67,7 +68,8 @@ public:
 	void                     LevelInitPreEntity(const char* map);
 	void                     FrameStageNotify(Stage_t stage);
 	void                     UpdateClientSideAnimation();
-	Weapon* GetActiveWeapon();
+	Weapon*					 GetActiveWeapon();
+	bool                     EntityShouldInterpolate();
 	bool                     InPrediction();
 	bool                     ShouldDrawParticles();
 	bool                     ShouldDrawFog();
@@ -132,6 +134,7 @@ public:
 
 	// old player create fn.
 	DoExtraBoneProcessing_t     m_DoExtraBoneProcessing;
+	EntityShouldInterpolate_t   m_EntityShouldInterpolate;
 	UpdateClientSideAnimation_t m_UpdateClientSideAnimation;
 	GetActiveWeapon_t           m_GetActiveWeapon;
 	BuildTransformations_t      m_BuildTransformations;

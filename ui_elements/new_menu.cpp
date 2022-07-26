@@ -191,7 +191,7 @@ std::vector < std::string> zoom_mode = { "off", "always", "hitchance fail" };
 
 
 std::vector <std::string> ptch = { XOR( "off" ), XOR( "down" ), XOR( "up" ), XOR( "random" ), XOR( "ideal" ) };
-std::vector <std::string> yaw = { XOR( "off" ), XOR( "direction" ), XOR( "jitter" ), XOR( "rotate" ), XOR( "random" ) };
+std::vector <std::string> yaw = { XOR( "off" ), XOR( "direction" ), XOR("jitter"), XOR("rotate"), XOR("random")};
 std::vector <std::string> drr = { XOR( "auto" ), XOR( "backwards" ), XOR( "left" ), XOR( "right" ), XOR( "custom" ) };
 std::vector <std::string> baseangle = { XOR( "off" ), XOR( "static" ), XOR( "away crosshair" ), XOR( "away distance" ) };
 std::vector <std::string> fakebody = { XOR( "off" ), XOR( "left" ), XOR( "right" ), XOR( "opposite" ), XOR( "z" ), XOR( "twist" ), XOR( "twist z" ), XOR( "fick random" ) };
