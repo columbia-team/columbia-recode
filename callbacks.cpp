@@ -319,6 +319,9 @@ bool callbacks::IsProjectileRadius() {
 	return g_menu.main.visuals.proj_radius.get();
 }
 
+bool callbacks::IsDroppedWeapons() {
+	return g_menu.main.visuals.items.get();
+}
 
 // weaponcfgs callbacks.
 bool callbacks::DEAGLE() {

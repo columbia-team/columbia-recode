@@ -763,6 +763,7 @@ public:
 
 class VisualsTab : public Tab {
 public:
+	MultiDropdown dropped_weapons;
 	Checkbox      distance;
 	Checkbox      items;
 	Colorpicker   item_color;
@@ -831,6 +832,10 @@ public:
 
 		items.setup(XOR("dropped weapons"), XOR("items"));
 		RegisterElement(&items);
+
+		dropped_weapons.setup(XOR("dropped items"), XOR("dropped_weapons"), { XOR("name"), XOR("icon"), XOR("distance"), XOR("ammo") });
+		dropped_weapons.AddShowCallback(callbacks::IsDroppedWeapons);
+		RegisterElement(&dropped_weapons);
 
 		//distance.setup(XOR("weapons distance"), XOR("distance"));
 		//RegisterElement(&distance);

@@ -65,6 +65,9 @@ public:
 	int m_body_index;
 	int m_moving_index;
 	int m_freestanding_index;
+	int m_lby_delta_index;
+
+	std::string resolver_mode;
 	std::string mode;
 
 	// data about the LBY proxy.

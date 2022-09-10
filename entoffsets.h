@@ -218,6 +218,7 @@ public:
         INIT_XOREDNETVAR( m_OriginalOwnerXuidHigh,      HASH( "DT_BaseAttributableItem" ), HASH( "m_OriginalOwnerXuidHigh" ) );
         INIT_XOREDNETVAR( m_bPinPulled,                 HASH( "DT_BaseCSGrenade" ),        HASH( "m_bPinPulled" ) );
         INIT_XOREDNETVAR( m_fThrowTime,                 HASH( "DT_BaseCSGrenade" ),        HASH( "m_fThrowTime" ) );
+        INIT_XOREDNETVAR( m_hThrower,                   HASH( "DT_BaseCSGrenade" ),        HASH( "m_hThrower" ));
         INIT_XOREDNETVAR( m_hWeapon,                    HASH( "DT_PredictedViewModel" ),   HASH( "m_hWeapon" ) );
         INIT_XOREDNETVAR( m_hWeaponWorldModel,          HASH( "DT_BaseCombatWeapon" ),     HASH( "m_hWeaponWorldModel" ) );
         INIT_XOREDNETVAR( m_hOwnerEntity,               HASH( "DT_CSPlayer" ),             HASH( "m_hOwnerEntity" ) );
@@ -231,6 +232,7 @@ public:
         INIT_XOREDNETVAR_SPECIFIC( m_flOldSimulationTime,        g_netvars.get( HASH( "DT_BaseEntity" ),       HASH( "m_flSimulationTime" ) ) + sizeof( float ) );
         INIT_XOREDNETVAR_SPECIFIC( m_CustomMaterials,            g_netvars.get( HASH( "DT_BaseCombatWeapon" ), HASH( "m_Item" ) ) + 0x14 );
         INIT_XOREDNETVAR_SPECIFIC( m_VisualsDataProcessors,      g_netvars.get( HASH( "DT_BaseCombatWeapon" ), HASH( "m_Item" ) ) + 0x220 );
+        INIT_XOREDNETVAR_SPECIFIC( m_flSpawnTime_Grenade,        0x29b0);
         INIT_XOREDNETVAR_SPECIFIC( m_vecOldOrigin,               0x3A8 );
         INIT_XOREDNETVAR_SPECIFIC( m_fEffects,                   0xEC );
         INIT_XOREDNETVAR_SPECIFIC( m_bReadyToDraw,               0x270 );

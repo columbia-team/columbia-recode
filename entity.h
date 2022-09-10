@@ -1322,7 +1322,6 @@ public:
 		return get< int >(g_entoffsets.m_iItemDefinitionIndex);
 	}
 
-
 	__forceinline CHandle<Player>& m_hThrower() {
 		return get< CHandle<Player> >(g_entoffsets.m_hThrower);
 	}

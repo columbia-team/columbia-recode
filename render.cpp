@@ -44,6 +44,8 @@ void render::init() {
 	big_combo = Font(XOR("Conthrax Sb"), 25, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	big_score_num = Font(XOR("Conthrax Sb"), 60, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	spectators = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_DROPSHADOW);
+	icons = Font(XOR("undefeated"), 14, FW_MEDIUM, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
+	icons1 = Font(XOR("undefeated"), 20, FW_MEDIUM, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 }
 
 bool render::WorldToScreen3d(const vec3_t& world, vec3_t& screen) {

@@ -82,6 +82,7 @@ namespace callbacks {
 	bool IsProxWarning();
 	bool IsProjectiles();
 	bool IsProjectileRadius();
+	bool IsDroppedWeapons();
 
 	// weapon cfgs.
 	bool DEAGLE();

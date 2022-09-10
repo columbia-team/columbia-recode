@@ -814,6 +814,8 @@ void Visuals::DrawItem(Weapon* item) {
 	if (!render::WorldToScreen(origin, screen))
 		return;
 
+	auto dist_world = core.m_local->m_vecOrigin().dist_to(origin);
+
 	WeaponInfo* data = item->GetWpnData();
 	if (!data)
 		return;
@@ -824,25 +826,44 @@ void Visuals::DrawItem(Weapon* item) {
 	Color col1337 = g_menu.main.visuals.dropammo_color.get();
 	col1337.a() = 0xb4;
 
+	Color col1338 = { 0,0,0,180 };
+	col1338.a() = 0xb4;
+
 	// render bomb in green.
 	if (item->is(HASH("CC4")))
 
-		render::esp_small.string(screen.x, screen.y, { 150, 200, 60, 0xb4 }, XOR("C4"), render::ALIGN_CENTER);
+		render::esp_small.string(screen.x, screen.y, { 150, 200, 60, 0xb4 }, XOR("BOMB"), render::ALIGN_CENTER);
 
 	// if not bomb
 	// normal item, get its name.
 	else {
 		std::string name{ item->GetLocalizedName() };
+		std::string icon = tfm::format(XOR("%c"), m_weapon_icons[item->m_iItemDefinitionIndex()]);
 
 		// smallfonts needs uppercase.
 		std::transform(name.begin(), name.end(), name.begin(), ::toupper);
 
-		if (g_menu.main.visuals.distance.get())
-			render::esp_small.string(screen.x, screen.y - 8, col, distance, render::ALIGN_CENTER);
-		render::esp_small.string(screen.x, screen.y, col, name, render::ALIGN_CENTER);
+		if (dist_world > 150.f) {
+			col.a() *= std::clamp((750.f - (dist_world - 200.f)) / 750.f, 0.f, 1.f);
+		}
+
+		if (g_menu.main.visuals.dropped_weapons.get(0))
+			render::esp_small.string(screen.x, screen.y, col, name, render::ALIGN_CENTER);
+
+		if (g_menu.main.visuals.dropped_weapons.get(2) && !g_menu.main.visuals.dropped_weapons.get(3))
+			render::esp_small.string(screen.x, screen.y + 9, col, distance, render::ALIGN_CENTER);
+
+		if (g_menu.main.visuals.dropped_weapons.get(2) && g_menu.main.visuals.dropped_weapons.get(3))
+			render::esp_small.string(screen.x, screen.y + 14, col, distance, render::ALIGN_CENTER);
+
+		if (g_menu.main.visuals.dropped_weapons.get(1) && g_menu.main.visuals.dropped_weapons.get(0)) // ICON, NAME
+			render::icons.string(screen.x, screen.y - 13, col, icon, render::ALIGN_CENTER);
+
+		if (g_menu.main.visuals.dropped_weapons.get(1) && !g_menu.main.visuals.dropped_weapons.get(0)) // ICON, NO NAME
+			render::icons.string(screen.x, screen.y - 6, col, icon, render::ALIGN_CENTER);
 	}
 
-	if (!g_menu.main.visuals.ammo.get())
+	if (!g_menu.main.visuals.dropped_weapons.get(3))
 		return;
 
 	// nades do not have ammo.
@@ -855,14 +876,17 @@ void Visuals::DrawItem(Weapon* item) {
 	std::string ammo = tfm::format(XOR("(%i/%i)"), item->m_iClip1(), item->m_iPrimaryReserveAmmoCount());
 	//render::esp_small.string( screen.x, screen.y - render::esp_small.m_size.m_height - 1, col, ammo, render::ALIGN_CENTER );
 
+	if (dist_world > 150.f) {
+		col1337.a() *= std::clamp((750.f - (dist_world - 200.f)) / 750.f, 0.f, 1.f);
+		col1338.a() *= std::clamp((750.f - (dist_world - 200.f)) / 750.f, 0.f, 1.f);
+	}
+
 	int current = item->m_iClip1();
 	int max = data->m_max_clip1;
 	float scale = (float)current / max;
 	int bar = (int)std::round((51 - 2) * scale);
-	render::rect_filled(screen.x - 25, screen.y + 9, 51, 4, { 0,0,0,180 });
+	render::rect_filled(screen.x - 25, screen.y + 9, 51, 4, col1338);
 	render::rect_filled(screen.x - 25 + 1, screen.y + 9 + 1, bar, 2, col1337);
-
-
 }
 
 void Visuals::OffScreen(Player* player, int alpha) {
