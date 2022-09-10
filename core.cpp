@@ -17,8 +17,14 @@ void Core::Watermark() {
 		return;
 
 	int ms = std::max(0, (int)std::round(core.m_latency * 1000.f));
+#ifdef DEV
+	/*static const*/ std::string text = tfm::format(XOR("columbia | dev | %i ms | %i"), ms, __DATE__);
+#endif // DEV
 
-	/*static const*/ std::string text = tfm::format(XOR("columbia | dev | %i ms"), ms);
+#ifndef DEV
+	/*static const*/ std::string text = tfm::format(XOR("columbia | user | %i ms"), ms);
+#endif // NON DEV
+
 	render::FontSize_t size = render::hud.size(text);
 
 	Color ciocan = g_menu.main.config.menu_color.get();
@@ -264,10 +270,21 @@ void Core::OnPaint() {
 	g_grenades.paint();
 	g_notify.think();
 
+	for (auto k = 0; k < g_csgo.m_entlist->GetHighestEntityIndex(); k++)
+	{
+		Player* entity = g_csgo.m_entlist->GetClientEntity(k)->as<Player*>();
+
+		if (entity == nullptr ||
+			!entity->GetClientClass() ||
+			entity == core.m_local)
+			continue;
+
+		g_grenades_pred.grenade_warning(entity);
+		g_grenades_pred.get_local_data().draw();
+	}
+
 	DrawHUD();
-
 	g_visuals.IndicateAngles();
-
 	KillFeed();
 
 	// menu goes last.

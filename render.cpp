@@ -18,6 +18,8 @@ namespace render {
 	Font big_combo;;
 	Font big_score_num;;
 	Font spectators;;
+	Font icons;;
+	Font icons1;;
 }
 
 void render::init() {
@@ -44,7 +46,7 @@ void render::init() {
 	spectators = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_DROPSHADOW);
 }
 
-bool render::WorldToScreen2(const vec3_t& world, vec3_t& screen) {
+bool render::WorldToScreen3d(const vec3_t& world, vec3_t& screen) {
 	float w;
 
 	const VMatrix& matrix = g_csgo.m_engine->WorldToScreenMatrix();
@@ -71,7 +73,7 @@ bool render::WorldToScreen2(const vec3_t& world, vec3_t& screen) {
 
 #define ZERO vec3_t(0.0f, 0.0f, 0.0f)
 
-void render::Draw3DFilledCircle(const vec3_t& origin, float radius, Color color) // OUTLINE 
+/*void render::Draw3DFilledCircle(const vec3_t& origin, float radius, Color color) // OUTLINE 
 {
 	auto prevScreenPos = ZERO; //-V656
 	auto step = math::pi * 2.0f / 72.0f;
@@ -79,14 +81,14 @@ void render::Draw3DFilledCircle(const vec3_t& origin, float radius, Color color)
 	auto screenPos = ZERO;
 	auto screen = ZERO;
 
-	if (!render::WorldToScreen2(origin, screen))
+	if (!render::WorldToScreen3d(origin, screen))
 		return;
 
 	for (auto rotation = 0.0f; rotation <= math::pi * 2.0f; rotation += step) //-V1034
 	{
 		vec3_t pos(radius * cos(rotation) + origin.x, radius * sin(rotation) + origin.y, origin.z);
 
-		if (render::WorldToScreen2(pos, screenPos))
+		if (render::WorldToScreen3d(pos, screenPos))
 		{
 			if (!prevScreenPos.IsZero() && prevScreenPos.IsValid() && screenPos.IsValid() && prevScreenPos != screenPos)
 			{
@@ -96,7 +98,7 @@ void render::Draw3DFilledCircle(const vec3_t& origin, float radius, Color color)
 			prevScreenPos = screenPos;
 		}
 	}
-}
+}*/
 
 void render::Draw3DRainbowCircle(const vec3_t& origin, float radius, Color color)
 {
@@ -117,7 +119,7 @@ void render::Draw3DRainbowCircle(const vec3_t& origin, float radius, Color color
 
 		g_csgo.m_engine_trace->TraceRay(Ray(origin, pos), MASK_SHOT_BRUSHONLY, &filter, &trace);
 
-		if (render::WorldToScreen2(trace.m_endpos, screenPos))
+		if (render::WorldToScreen3d(trace.m_endpos, screenPos))
 		{
 			if (!prevScreenPos.IsZero())
 			{
@@ -133,6 +135,51 @@ void render::DrawLine(int x0, int y0, int x1, int y1, Color col, bool shadow)
 {
 	g_csgo.m_surface->DrawSetColor(col);
 	g_csgo.m_surface->DrawLine(x0, y0, x1, y1);
+}
+
+void render::draw_dynamic_circle(const vec3_t& origin, float radius, Color color)
+{
+	static auto hue_offset = 0.0f;
+	static auto prev_scr_pos = ZERO; //-V656
+	static auto step = M_PI * 2.0f / 72.0f;
+
+	auto scr_pos = ZERO;
+
+	for (auto rotation = 0.0f; rotation <= M_PI * 2.0f; rotation += step) //-V1034
+	{
+		vec3_t pos(radius * cos(rotation) + origin.x, radius * sin(rotation) + origin.y, origin.z);
+
+		CGameTrace trace;
+		CTraceFilterWorldOnly filter;
+
+		g_csgo.m_engine_trace->TraceRay(Ray(origin, pos), MASK_SHOT_BRUSHONLY, &filter, &trace);
+
+		if (render::WorldToScreen3d(trace.m_endpos, scr_pos))
+		{
+			if (!prev_scr_pos.is_zero())
+			{
+				//int hue = math::rad_to_deg(rotation) + hue_offset;
+
+				//float r, g, b;
+				//ColorConvertHSVtoRGB(hue / 360.f, 1, 1, r, g, b);
+				//Color color = Color(r, g, b);
+
+				//cstrike.m_surface->draw_set_color(color);
+				// 
+				static float rainbow;
+				rainbow += 0.003f;
+				if (rainbow > 1.f) rainbow = 0.f;
+
+				g_csgo.m_surface->DrawSetColor(color);
+				g_csgo.m_surface->DrawLine(prev_scr_pos.x, prev_scr_pos.y, scr_pos.x, scr_pos.y);
+				//render::line(prev_scr_pos.x, prev_scr_pos.y, scr_pos.x, scr_pos.y, color);
+			}
+
+			prev_scr_pos = scr_pos;
+		}
+	}
+
+	hue_offset += g_csgo.m_globals->m_frametime * 200.0f;
 }
 
 void render::DrawFilledCircle(int x, int y, int radius, int segments, Color color) {
@@ -186,6 +233,36 @@ bool render::WorldToScreen(const vec3_t& world, vec2_t& screen) {
 	screen.y = (core.m_height / 2) - (screen.y * core.m_height) / 2;
 
 	return true;
+}
+
+void render::world_circle(vec3_t origin, float radius, float angle, Color color) {
+	std::vector< Vertex > vertices{};
+
+	float step = (1.f / radius) + math::deg_to_rad(angle);
+
+	float lat = 1.f;
+	vertices.clear();
+
+	for (float lon{}; lon < math::pi_2; lon += step) {
+		vec3_t point{
+			origin.x + (radius * std::sin(lat) * std::cos(lon)),
+			origin.y + (radius * std::sin(lat) * std::sin(lon)),
+			origin.z + (radius * std::cos(lat) - (radius / 2))
+		};
+
+		vec2_t screen;
+		if (WorldToScreen(point, screen))
+			vertices.emplace_back(screen);
+	}
+	static int texture = g_csgo.m_surface->CreateNewTextureID(false);
+
+	g_csgo.m_surface->DrawSetTextureRGBA(texture, &colors::white, 1, 1);
+	g_csgo.m_surface->DrawSetColor(color);
+
+	//g_csgo.m_surface->DrawSetTexture(texture);
+	//g_csgo.m_surface->DrawTexturedPolygon(vertices.size(), vertices.data());
+
+	g_csgo.m_surface->DrawTexturedPolyLine(vertices.size(), vertices.data());
 }
 
 void render::Font::semi_filled_text( int x, int y, Color color, const std::string& text, StringFlags_t flags, float factor )
@@ -286,6 +363,8 @@ void render::draw_arc(int x, int y, int radius, int start_angle, int percent, in
 	}
 }
 
+// non 3d grenade circle
+
 void render::circle(int x, int y, int radius, int segments, Color color) {
 	static int texture = g_csgo.m_surface->CreateNewTextureID(true);
 
@@ -301,6 +380,7 @@ void render::circle(int x, int y, int radius, int segments, Color color) {
 
 	g_csgo.m_surface->DrawTexturedPolygon(vertices.size(), vertices.data());
 }
+
 void render::gradient(int x, int y, int w, int h, Color color1, Color color2) {
 	g_csgo.m_surface->DrawSetColor(color1);
 	g_csgo.m_surface->DrawFilledRectFade(x, y, x + w, y + h, color1.a(), 0, false);

@@ -221,6 +221,13 @@ public:
 		return ( ( x * x ) + ( y * y ) );
 	}
 
+	__forceinline bool is_zero(float tolerance = 0.01f) const
+	{
+		return (this->x > -tolerance && this->x < tolerance&&
+			this->y > -tolerance && this->y < tolerance&&
+			this->z > -tolerance && this->z < tolerance);
+	}
+
 	__forceinline float length( ) const {
 		return std::sqrt( length_sqr( ) );
 	}

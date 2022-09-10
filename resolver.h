@@ -17,6 +17,10 @@ public:
 		RESOLVE_LASTMOVE,
 		RESOLVE_UNKNOWM,
 		RESOLVE_BRUTEFORCE,
+		RESOLVE_LAST_LBY,
+		RESOLVE_LBY_UPDATE,
+		RESOLVE_FREESTAND,
+		RESOLVE_DELTA,
 	};
 
 public:
@@ -35,21 +39,30 @@ public:
 	void MatchShot(AimPlayer* data, LagRecord* record);
 	void SetMode(LagRecord* record);
 
+	void ResolveStand(AimPlayer* data, LagRecord* record, Player* player);
 	void ResolveAngles(Player* player, LagRecord* record);
-	void ResolveWalk(AimPlayer* data, LagRecord* record);
+	void ResolveWalk(AimPlayer* data, LagRecord* record, Player* player);
+	void ResolveAir(AimPlayer* data, LagRecord* record, Player* player);
 	void ResolveYawBruteforce(LagRecord* record, Player* player, AimPlayer* data);
 	float GetDirectionAngle(int index, Player* player);
 	void LastMoveLby(LagRecord* record, AimPlayer* data, Player* player);
 	void ResolveStand(AimPlayer* data, LagRecord* record);
 	void StandNS(AimPlayer* data, LagRecord* record);
-	void ResolveAir(AimPlayer* data, LagRecord* record, Player* player);
+	bool Spin_Detection(AimPlayer* data);
+	float GetDirectionAngle(int index, Player* player, LagRecord* record);
 
 	void AirNS(AimPlayer* data, LagRecord* record);
 	void ResolvePoses(Player* player, LagRecord* record);
 
 	void AntiFreestand(LagRecord* record);
 
+	void ResolveOverride(Player* player, LagRecord* record, AimPlayer* data);
+
 	//void AntiFreestand(Player* pEnemy, float& y, float flLeftDamage, float flRightDamage, float flRightFraction, float flLeftFraction, float flToMe, int& iShotsMissed);
+
+	float spindelta;
+	float spinbody;
+	int spin_step;
 
 public:
 	std::array< vec3_t, 64 > m_impacts;

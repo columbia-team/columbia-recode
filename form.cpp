@@ -1,18 +1,22 @@
 #include "includes.h"
 
 void Form::draw( ) {
+	if (!m_open)
+		return;
+
 	m_open ? m_alpha = 255 : m_alpha = 0;
+	static int m_next_alpha3{ 223 };
 
 	// get gui color.
 	Color color = g_gui.m_color;
-	color.a( ) = m_alpha;
+	color.a( ) = m_next_alpha3;
 
 	Color tabs_color = colors::white;
 	if ( m_open ) {
-		tabs_color.a( ) = 10;
+		tabs_color.a( ) = 100;
 	}
 	else if ( !m_open ) {
-		tabs_color.a( ) = 0;
+		tabs_color.a( ) = m_alpha;
 	}
 
 	/* main window */ render::rect_filled( m_x, m_y, m_width, m_height, Color( 16, 16, 16, m_alpha ) );
@@ -20,7 +24,7 @@ void Form::draw( ) {
 	/* elements rect */ render::rect_filled( m_x + 5, m_y + 5, m_width - 10, m_height - 10, Color( 24, 24, 24, m_alpha ) );
 
 	for ( int io = 0; io < m_width / 2 - 5; io++ )
-		/* backround */ render::rect( m_x + 5 + ( io * 2 ), m_y + 26, 1, m_height - 33, Color( 20, 20, 20, m_alpha ) );
+	/* backround */ render::rect(m_x + (io * 2), m_y, 3, m_height - 33, Color(18, 18, 18, m_alpha));
 
 	/* up bar/name bar */ render::rect_filled( m_x + 5, m_y + 5, m_width - 10, 27, Color( 24, 24, 24, m_alpha ) );
 	/* outlines */ render::rect( m_x + 5, m_y + 5, m_width - 10, m_height - 10, Color( 45, 45, 45, m_alpha ) );
@@ -28,6 +32,28 @@ void Form::draw( ) {
 	/* cheat name */ render::menu_shade.string( m_x + 17 + render::menu_shade.size( "colubmia" ).m_width, m_y + 11, color, "columbia", render::ALIGN_RIGHT );
 
 	render::gradient1337( m_x + 155, m_y + 30, m_width - 160, 1.5, Color( 0, 0, 0, 0 ), color );
+
+	Rect hover_rect = GetFormRect();
+	auto hovered = g_input.IsCursorInRect(hover_rect);
+
+	/* window animations */
+	if (hovered)
+		m_next_alpha3 += 1;
+	else
+		m_next_alpha3 -= 1;
+
+	if (m_next_alpha3 > 100)
+		m_next_alpha3 = 100;
+
+	if (m_next_alpha3 < 0)
+		m_next_alpha3 = 0;
+
+	/* clamp alpha */
+	std::clamp<int>(m_next_alpha3, 0, 50);
+
+	if (g_menu.main.config.hover.get()) {
+		render::rect(m_x - 2, m_y - 2, m_width + 4, m_height + 6, color);
+	}
 
 	// font size.
 	size_t font_w = 8;

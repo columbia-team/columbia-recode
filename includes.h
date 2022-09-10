@@ -40,6 +40,9 @@ using ulong_t = unsigned long;
 #include <filesystem>
 #include <streambuf>
 
+#include <d3d9.h>
+#pragma comment(lib, "d3d9.lib")
+
 // our custom wrapper.
 #include "unique_vector.h"
 #include "tinyformat.h"
@@ -90,6 +93,7 @@ using ulong_t = unsigned long;
 #include "shots.h"
 #include "playsoundapi.h"
 #include "minwindef.h"
+#include "gh.h"
 
 // gui includes.
 #include "json.h"

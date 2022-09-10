@@ -82,6 +82,7 @@ namespace colors {
 	static Color light_blue{ 95, 174, 227, 255 };
 	static Color orange{ 243, 156, 18, 255 };
 	static Color green{ 149, 184, 6, 255 };
+	static Color light_green{ 179, 230, 181, 255 };
 	static Color purple{ 180, 60, 120, 255 };
 	static Color transparent_green{ 0, 255, 0, 200 };
 	static Color transparent_yellow{ 255, 255, 0, 200 };

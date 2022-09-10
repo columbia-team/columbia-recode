@@ -772,6 +772,7 @@ public:
 	Colorpicker   proj_color;
 	MultiDropdown proj_range;
 	Colorpicker   proj_range_color;
+	Checkbox	  proj_radius;
 	MultiDropdown planted_c4;
 	Checkbox      disableteam;
 	Dropdown	  world;
@@ -811,6 +812,11 @@ public:
 	Checkbox      tracers_circle;
 	Colorpicker   tracers_colors;
 	Checkbox      tracers;
+	Checkbox	  grenade_tracer_warning;
+	Colorpicker   warningtracer_col;
+	Checkbox	  grenade_warning;
+	Colorpicker   smoke_radius_color;
+	Colorpicker   molly_radius_color;
 	Checkbox      impact_beams;
 	Colorpicker   impact_beams_color;
 	Colorpicker   impact_beams_hurt_color;
@@ -847,9 +853,23 @@ public:
 		proj_range.setup(XOR("projectiles range"), XOR("proj_range"), { XOR("molly"), XOR("smoke") });
 		RegisterElement(&proj_range);
 
-		proj_range_color.setup(XOR("projectiles range color"), XOR("proj_range_color"), colors::burgundy);
+		proj_range_color.setup(XOR("projectiles timer color"), XOR("proj_range_color"), colors::burgundy);
 		RegisterElement(&proj_range_color);
 		
+		proj_radius.setup(XOR("projectile radius"), XOR("projectile_radius"));
+		proj_radius.AddShowCallback(callbacks::IsProjectiles);
+		RegisterElement(&proj_radius);
+
+		smoke_radius_color.setup(XOR("smoke radius color"), XOR("smoke_radius_color"), colors::light_blue);
+		smoke_radius_color.AddShowCallback(callbacks::IsProjectiles);
+		smoke_radius_color.AddShowCallback(callbacks::IsProjectileRadius);
+		RegisterElement(&smoke_radius_color);
+
+		molly_radius_color.setup(XOR("molotov radius color"), XOR("molotov_radius_color"), colors::red);
+		molly_radius_color.AddShowCallback(callbacks::IsProjectiles);
+		molly_radius_color.AddShowCallback(callbacks::IsProjectileRadius);
+		RegisterElement(&molly_radius_color);
+
 		planted_c4.setup(XOR("planted c4"), XOR("planted_c4"), { XOR("on screen (2D)"), XOR("on bomb (3D)"), XOR("bomb timer (2D)"), XOR("bomb timer (3D)") });
 		RegisterElement(&planted_c4);
 
@@ -937,8 +957,19 @@ public:
 		keybinds.setup(XOR("keybind status"), XOR("keybinds"));
 		RegisterElement(&keybinds, 1);
 
-		tracers_circle.setup(XOR("grenade simulation circle"), XOR("tracers_circles"));
-		RegisterElement(&tracers_circle);
+		grenade_warning.setup(XOR("grenade proximity warning"), XOR("warning_prox"));
+		RegisterElement(&grenade_warning);
+
+		grenade_tracer_warning.setup(XOR("grenade proximity tracer"), XOR("warning_prox_t"));
+		grenade_tracer_warning.AddShowCallback(callbacks::IsProxWarning);
+		RegisterElement(&grenade_tracer_warning);
+
+		warningtracer_col.setup(XOR("tracer color"), XOR("tracer_col"), colors::burgundy);
+		warningtracer_col.AddShowCallback(callbacks::IsProxWarning);
+		RegisterElement(&warningtracer_col);
+
+		//tracers_circle.setup(XOR("grenade simulation circle"), XOR("tracers_circles"));
+		//RegisterElement(&tracers_circle);
 
 		tracers.setup(XOR("grenade simulation"), XOR("tracers"));
 		RegisterElement(&tracers, 1);
@@ -2159,6 +2190,7 @@ public:
 	MultiDropdown buy2;
 	MultiDropdown buy3;
 	MultiDropdown notifications;
+	Colorpicker	  notcolor;
 	Keybind       last_tick_defuse;
 	Checkbox	  fake_latency_always;
 	Keybind       fake_latency;
@@ -2226,6 +2258,9 @@ public:
 
 		notifications.setup(XOR("notifications"), XOR("notifications"), { XOR("matchmaking"), XOR("damage"), XOR("harmed"), XOR("weapon purchases"), XOR("bomb"), XOR("defuse")});
 		RegisterElement(&notifications);
+
+		notcolor.setup(XOR("color"), XOR("noticolor"), colors::white);
+		RegisterElement(&notcolor);
 
 		//last_tick_defuse.setup(XOR("last tick defuse"), XOR("last_tick_defuse"));
 		//RegisterElement(&last_tick_defuse);
@@ -2324,14 +2359,19 @@ public:
 	Keybind  key6;
 	Button   save;
 	Button   load;
+	Checkbox hover;
 
 public:
 
 	void init() {
 		SetTitle(XOR("config"));
 
-		menu_color.setup(XOR("menu color"), XOR("menu_color"), colors::phobos_accent, &g_gui.m_color);
+		menu_color.setup(XOR("menu color"), XOR("menu_color"), colors::gamesense_accent, &g_gui.m_color);
 		RegisterElement(&menu_color);
+
+		hover.setup(XOR("menu border glow"), XOR("hover"));
+		//hover.AddShowCallback(callbacks::IsNewMenu);
+		RegisterElement(&hover);
 
 	//	mode.setup(XOR("safety mode"), XOR("mode"), { XOR("matchmaking"), XOR("no-spread") });
 	//	RegisterElement(&mode, 1);

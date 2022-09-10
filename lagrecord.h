@@ -87,6 +87,7 @@ public:
 	bool   m_shot;
 	float  m_away;
 	float  m_anim_time;
+	std::string m_resolver_mode;
 
 	// other stuff.
 	float  m_interp_time;

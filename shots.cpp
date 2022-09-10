@@ -1,6 +1,7 @@
 #include "includes.h"
 #include "resolver.h"
 #include "hitsounds.h"
+#include "menu.h"
 
 Shots g_shots{ };
 
@@ -287,8 +288,8 @@ void Shots::OnHurt(IGameEvent* evt) {
 
 	// print this shit.
 	if (g_menu.main.misc.notifications.get(1)) {
-		std::string out = tfm::format(XOR("fired shot at %s in the %s for %i damage (%i health remaining)\n"), name, m_groups[group], (int)damage, hp);
-		g_notify.add(out);
+		std::string out = tfm::format(XOR("[shot] [type: hit] [player: %s] [hitbox: %s] [damage: %i] [%i remaining]\n"), name, m_groups[group], (int)damage, hp);
+		g_notify.add(out, Color(g_menu.main.misc.notcolor.get()));
 
 		if (hp == 0 && g_menu.main.misc.killsay.get()) {
 			int killsay = rand() % 5;

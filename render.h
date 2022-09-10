@@ -64,6 +64,8 @@ namespace render {
 	extern Font damage;
 	extern Font big_point;
 	extern Font big_combo;
+	extern Font icons;
+	extern Font icons1;
 
 	void Draw3DRainbowCircle(const vec3_t& origin, float radius, Color color);
 	//void Draw3DRainbowCircle2(const vec3_t& origin, float radius);
@@ -79,7 +81,9 @@ namespace render {
 	void draw_arc(int x, int y, int radius, int start_angle, int percent, int thickness, Color color);
 	void Draw3DFilledCircle(const vec3_t& origin, float radius, Color color);
 	void DrawLine(int x0, int y0, int x1, int y1, Color col, bool shadow);
+	void draw_dynamic_circle(const vec3_t& origin, float radius, Color color);
 	void DrawFilledCircle(int x, int y, int radius, int segments, Color color);
+	void world_circle(vec3_t origin, float radius, float angle, Color color);
 	void TexturedPolygon(int n, std::vector<Vertex> vertice, Color color);
 	void rect_filled_fade(int x, int y, int w, int h, Color color, int a1, int a2);
 	void rect_outlined(int x, int y, int w, int h, Color color, Color color2);
@@ -91,7 +95,7 @@ namespace render {
 	void triangle(vec2_t point_one, vec2_t point_two, vec2_t point_three, Color color);
 
 	Vertex RotateVertex(const vec2_t& p, const Vertex& v, float angle);
-	bool WorldToScreen2(const vec3_t& world, vec3_t& screen);
+	bool WorldToScreen3d(const vec3_t& world, vec3_t& screen);
 }
 
 // je suis gay si vous voyez ça j'aime les hommes

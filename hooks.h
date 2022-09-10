@@ -5,6 +5,10 @@ public:
 	void init();
 
 public:
+
+	std::string color_to_string(float col[4]);
+	float* string_to_color(std::string s);
+
 	// forward declarations
 	class IRecipientFilter;
 
@@ -150,6 +154,13 @@ public:
 	DWORD undefeated2;
 	DWORD wmsymbols2;
 	DWORD impact2;
+
+	bool is_key_down(int key);
+	bool Is_Open = true;
+	bool is_key_up(int key);
+	bool is_key_pressed(int key);
+	bool auto_check(std::string key);
+	void imgui_menu();
 };
 
 // note - dex; these are defined in player.cpp.

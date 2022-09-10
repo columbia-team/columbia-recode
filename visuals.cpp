@@ -703,8 +703,8 @@ void Visuals::DrawProjectile(Weapon* ent) {
 			}
 		}
 	}
-
-	auto dist_world = core.m_local->m_vecOrigin().dist_to(origin);
+	
+	/*auto dist_world = core.m_local->m_vecOrigin().dist_to(origin);
 
 	//const double spawn_time_fire = *(float*)(uintptr_t(ent) + 0x20);
 	//const float spawn_time_smoke = game::TICKS_TO_TIME(ent->m_nSmokeEffectTickBegin());
@@ -721,73 +721,68 @@ void Visuals::DrawProjectile(Weapon* ent) {
 
 	if (actual <= 0)
 		return;
+	*/
 
 	// find classes.
 	else if (ent->is(HASH("CInferno"))) {
-		//if (dist_world > 400.f) 
-		//render::esp_small.string(screen.x, screen.y + 3, col, XOR("FIRE"), render::ALIGN_CENTER);
-		//else
-			//render::DrawString(F::ESPInfo, screen.x, screen.y + 8.0, Color(255, 255, 255, 255), FONT_CENTER, "FIRE - %.1f", (spawn_time_fire + 7.031) - g_csgo.m_globals->m_curtime);
 
-		if (dist_world > 400.f) {
-			col.a() *= std::clamp((750.f - (dist_world - 400.f)) / 750.f, 0.f, 1.f);
+		const double spawn_time = *(float*)(uintptr_t(ent) + 0x20);
+		const double factor = ((spawn_time + 7.031) - g_csgo.m_globals->m_curtime) / 7.031;
+
+		if (spawn_time > 0.f && g_menu.main.visuals.proj_range.get(1)) {
+			if (g_menu.main.visuals.proj_radius.get()) {
+				// setup our vectors.
+				vec3_t mins, maxs;
+
+				// get molotov bounds (current radius).
+				ent->GetRenderBounds(mins, maxs);
+
+				// render the smoke range circle.
+				render::world_circle(origin, vec3_t(maxs - mins).length_2d() * 0.5, 1.f, Color(g_menu.main.visuals.molly_radius_color.get().r(), g_menu.main.visuals.molly_radius_color.get().g(), g_menu.main.visuals.molly_radius_color.get().b(), col.a()));
+				//render::semi_filled_circle(origin, 1.f * factor, vec3_t(maxs - mins).length_2d() * 0.5, Color(g_menu.main.visuals.molly_radius_color.get().r(), g_menu.main.visuals.molly_radius_color.get().g(), g_menu.main.visuals.molly_radius_color.get().b(), col.a()));
+			}
+
+			// render our bg then timer colored bar
+			render::rect_filled(screen.x - 13 + 1, screen.y + 9, 26, 4, Color(0, 0, 0, col.a()));
+			render::rect_filled(screen.x - 13 + 2, screen.y + 9 + 1, 24 * factor, 2, Color(g_menu.main.visuals.proj_range_color.get().r(), g_menu.main.visuals.proj_range_color.get().g(), g_menu.main.visuals.proj_range_color.get().b(), col.a()));
+
+			// render our timer in seconds and our title text
+			render::esp_small.string(screen.x - 13 + 26 * factor, screen.y + 7, col, tfm::format(XOR("%.1f"), (spawn_time + 7.031) - g_csgo.m_globals->m_curtime), render::ALIGN_CENTER);
+			render::esp_small.string(screen.x, screen.y, col, XOR("FIRE"), render::ALIGN_CENTER);
 		}
-
-
-		render::Draw3DRainbowCircle(origin, 165.f, Color(165, 0, 0, col.a()));
-
-
-		// circle timer bar
-		if (g_menu.main.visuals.proj_range.get(0)) {
-			render::DrawFilledCircle(screen.x, screen.y - 7, 22, 180, Color(26, 26, 30, col.a()));
-			render::DrawFilledCircle(screen.x, screen.y - 7, 22, 180, Color(26, 26, 30, col.a()));
-			render::draw_arc(screen.x, screen.y - 7, 22, 0, 360 * factor, 1, Color(255, 255, 255, col.a()));
-			render::cs.string(screen.x, screen.y - 21, Color(255, 255, 255, col.a()), XOR("l"), render::ALIGN_CENTER);
-
-		}
-
-		render::esp_small.string(screen.x, screen.y - 3, { 255,255,255,200 }, XOR("MOLLY"), render::ALIGN_CENTER);
-
-		// render time of fire like bar(like drop weap ammo...)
-		//if (g_menu.main.visuals.proj_range.get(0)) {
-		//	render::rect_filled(screen.x - size.x * 0.5f, screen.y - size.y * 0.5f - 1.0f, size.x, size.y, Color(80, 80, 80, col.a()));
-		//	render::rect_filled(screen.x - size.x * 0.5f + 1.0f, screen.y - size.y * 0.5f, (size.x - 4.0f) * factor, size.y - 2.0f, Color(g_menu.main.visuals.proj_range_color.get().r(), g_menu.main.visuals.proj_range_color.get().g(), g_menu.main.visuals.proj_range_color.get().b(), col.a()));
-		//	render::rect(screen.x - size.x * 0.5f, screen.y - size.y * 0.5f, size.x, size.y, Color(7, 7, 7, col.a()));
-		// }
 	}
 
 	else if (ent->is(HASH("CSmokeGrenadeProjectile"))) {
 
-		//if (dist_world > 400.f) 
-		//render::esp_small.string(screen.x, screen.y + 3, col, XOR("SMOKE"), render::ALIGN_CENTER);
-		//else
-			//render::DrawString(F::ESPInfo, screen.x, screen.y + 8.0, Color(255, 255, 255, 255), FONT_CENTER, "SMOKE - %.1f", (spawn_time_smoke + 18.04125) - g_csgo.m_globals->m_curtime);
+		const float spawn_time = game::TICKS_TO_TIME(ent->m_nSmokeEffectTickBegin());
+		const double factor = ((spawn_time + 18.041) - g_csgo.m_globals->m_curtime) / 18.041;
 
-		if (dist_world > 400.f) {
-			col.a() *= std::clamp((750.f - (dist_world - 400.f)) / 750.f, 0.f, 1.f);
+		// make sure our smoke has started
+		if (spawn_time > 0.f && g_menu.main.visuals.proj_range.get(1)) {
+			if (g_menu.main.visuals.proj_radius.get()) {
+				float radius = 144.f;
+				auto time_since_explosion = g_csgo.m_globals->m_interval * (g_csgo.m_globals->m_tick_count - ent->m_nSmokeEffectTickBegin());
+
+				// animation.
+				if (0.3f > time_since_explosion)
+					radius = radius * 0.6f + (radius * (time_since_explosion / 0.3f)) * 0.4f;
+
+				if (1.0f > (18.041 - time_since_explosion))
+					radius = radius * (((18.041 - time_since_explosion) / 1.0f) * 0.3f + 0.7f);
+
+				// render the smoke range circle.
+				render::world_circle(origin, radius, 1.f, Color(g_menu.main.visuals.smoke_radius_color.get().r(), g_menu.main.visuals.smoke_radius_color.get().g(), g_menu.main.visuals.smoke_radius_color.get().b(), col.a()));
+				//render::semi_filled_circle(origin, 1.f * factor, radius, Color(g_menu.main.visuals.smoke_radius_color.get().r(), g_menu.main.visuals.smoke_radius_color.get().g(), g_menu.main.visuals.smoke_radius_color.get().b(), col.a()));
+			}
+
+			// render our bg then timer colored bar
+			render::rect_filled(screen.x - 13 + 1, screen.y + 9, 26, 4, Color(0, 0, 0, col.a()));
+			render::rect_filled(screen.x - 13 + 2, screen.y + 9 + 1, 24 * factor, 2, Color(g_menu.main.visuals.proj_range_color.get().r(), g_menu.main.visuals.proj_range_color.get().g(), g_menu.main.visuals.proj_range_color.get().b(), col.a()));
+
+			// render our timer in seconds and our title text
+			render::esp_small.string(screen.x - 13 + 26 * factor, screen.y + 7, col, tfm::format(XOR("%.1f"), (spawn_time + 18.04125) - g_csgo.m_globals->m_curtime), render::ALIGN_CENTER);
+			render::esp_small.string(screen.x, screen.y, col, XOR("SMOKE"), render::ALIGN_CENTER);
 		}
-
-
-		render::Draw3DFilledCircle(origin, 144, Color(66, 133, 180, col.a()));
-
-
-		// circle timer bar
-		if (g_menu.main.visuals.proj_range.get(1)) {
-			render::DrawFilledCircle(screen.x, screen.y - 7, 22, 180, Color(26, 26, 30, col.a()));
-			render::DrawFilledCircle(screen.x, screen.y - 7, 22, 180, Color(26, 26, 30, col.a()));
-			render::draw_arc(screen.x, screen.y - 7, 22, 0, 360 * actual, 1, Color(255, 255, 255, col.a()));
-			render::cs.string(screen.x, screen.y - 21, Color(255, 255, 255, col.a()), XOR("k"), render::ALIGN_CENTER);
-
-		}
-
-		render::esp_small.string(screen.x, screen.y - 3, { 255,255,255,200 }, XOR("SMOKE"), render::ALIGN_CENTER);
-
-		// render time of smoke like bar (like drop weap ammo...)
-		//if (actual > 0.f && actual < 18.f && g_menu.main.visuals.proj_range.get(1)) {
-		//	render::rect_filled(screen.x - size.x * 0.5f, screen.y - size.y * 0.5f - 1.0f, size.x, size.y, Color(80, 80, 80, col.a()));
-		//	render::rect_filled(screen.x - size.x * 0.5f + 1.0f, screen.y - size.y * 0.5f, (size.x - 4.0f) * actual, size.y - 2.0f, Color(g_menu.main.visuals.proj_range_color.get().r(), g_menu.main.visuals.proj_range_color.get().g(), g_menu.main.visuals.proj_range_color.get().b(), col.a()));
-		//	render::rect(screen.x - size.x * 0.5f, screen.y - size.y * 0.5f, size.x, size.y, Color(7, 7, 7, col.a()));
-		// }
 	}
 }
 void Visuals::DrawItem(Weapon* item) {

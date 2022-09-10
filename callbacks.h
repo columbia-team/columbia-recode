@@ -78,6 +78,11 @@ namespace callbacks {
 	bool IsDamageInVisible();
 	bool IsCustomLby();
 
+	bool IsTraacer();
+	bool IsProxWarning();
+	bool IsProjectiles();
+	bool IsProjectileRadius();
+
 	// weapon cfgs.
 	bool DEAGLE();
 	bool ELITE();

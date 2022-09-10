@@ -13,6 +13,9 @@ void Grenades::reset() {
 	m_bounces.clear();
 }
 
+
+
+
 void Grenades::paint() {
 	static CTraceFilterSimple_game filter{};
 	CGameTrace	                   trace;
@@ -29,8 +32,7 @@ void Grenades::paint() {
 	// we need some points at least.
 	if (m_path.size() < 2)
 		return;
-	const auto col_accent = g_menu.main.config.menu_color.get();
-	const auto nade_tracer_color = g_menu.main.visuals.tracers_colors.get();
+	const auto col_accent = g_menu.main.visuals.tracers_colors.get();
 	// setup trace filter for later.
 	filter.SetPassEntity(core.m_local);
 
@@ -43,7 +45,7 @@ void Grenades::paint() {
 		vec2_t screen0, screen1;
 
 		if (render::WorldToScreen(prev, screen0) && render::WorldToScreen(cur, screen1))
-			render::line(screen0, screen1, { nade_tracer_color });
+			render::line(screen0, screen1, { col_accent });
 
 		// store point for next iteration.
 		prev = cur;
@@ -112,24 +114,13 @@ void Grenades::paint() {
 		vec2_t screen;
 
 		if (render::WorldToScreen(b.point, screen))
-			render::DrawFilledCircle(screen.x, screen.y - 1, 2, 20, Color(255, 255, 255, 255));
-	}
 
-	vec3_t endpos = m_path[m_path.size() - 1];
+			render::circle(screen.x - 0, screen.y - 0, 2, 4, b.color);
 
-	if (g_menu.main.visuals.tracers_circle.get()) {
-		if (core.m_weapon->m_iItemDefinitionIndex() == SMOKE || MOLOTOV || FIREBOMB || HEGRENADE) {
-			render::Draw3DFilledCircle(endpos, 150, Color(255, 255, 255, 255));
-		}
-		/*else if (g_cl.m_weapon->m_iItemDefinitionIndex() == MOLOTOV || FIREBOMB)
-			render::Draw3DFilledCircle(endpos, 150, Color(255, 255, 255, 255));
-		else if (g_cl.m_weapon->m_iItemDefinitionIndex() == HEGRENADE)
-			render::Draw3DFilledCircle(endpos, 150, Color(255, 255, 255, 255));*/
 	}
 }
 
 void Grenades::think() {
-	bool attack, attack2;
 
 	// reset some data.
 	reset();
@@ -144,11 +135,8 @@ void Grenades::think() {
 	if (core.m_weapon_type != WEAPONTYPE_GRENADE)
 		return;
 
-	attack = (core.m_cmd->m_buttons & IN_ATTACK);
-	attack2 = (core.m_cmd->m_buttons & IN_ATTACK2);
-
-	//if( !attack && !attack2 )
-	//	return;
+	if (core.m_weapon_type == WEAPONTYPE_GRENADE && !core.m_weapon->m_bPinPulled())
+		return;
 
 	m_id = core.m_weapon_id;
 	m_power = core.m_weapon->m_flThrowStrength();

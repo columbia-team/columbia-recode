@@ -303,6 +303,23 @@ bool callbacks::IsConfig6() {
 	return g_menu.main.config.config.get() == 5;
 }
 
+bool callbacks::IsTraacer() {
+	return g_menu.main.visuals.grenade_tracer_warning.get();
+}
+
+bool callbacks::IsProxWarning() {
+	return g_menu.main.visuals.grenade_warning.get();
+}
+
+bool callbacks::IsProjectiles() {
+	return g_menu.main.visuals.proj.get();
+}
+
+bool callbacks::IsProjectileRadius() {
+	return g_menu.main.visuals.proj_radius.get();
+}
+
+
 // weaponcfgs callbacks.
 bool callbacks::DEAGLE() {
 	if (!g_csgo.m_engine->IsInGame() || !core.m_processing)

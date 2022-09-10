@@ -122,6 +122,20 @@ public:
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_flConstraintRadius;
     XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_hMyWeapons;
 
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_iOcclusionFramecount;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_ubEFNoInterpParity;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_iOcclusionFlags;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_bIsWalking;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_nExplodeEffectTickBegin;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_iNumOverlays;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_hThrower;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_flSpawnTime_Grenade;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > ReadableBones;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > WriteableBones;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > BoneArrayForWrite;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_nSmokeEffectTickBegin;
+    XoredNetvar< GET_XOR_KEYUI32, __COUNTER__ > m_flAccuracyPenalty;
+
     void init( ) {
         // initialize a xored netvar.
         #define INIT_XOREDNETVAR( member_var, table_hash, prop_hash ) \

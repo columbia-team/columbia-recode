@@ -1,5 +1,6 @@
 #pragma once
 #include "console.h"
+
 class Interfaces {
 private:
 	// used internally to register classes.
@@ -20,6 +21,8 @@ private:
 
 	// holds every interface used by the game.
 	std::vector< interface_t > m_interfaces;
+
+	HWND hWindow = nullptr;
 
 public:
 	// ctor.
