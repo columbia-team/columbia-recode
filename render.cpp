@@ -37,7 +37,7 @@ void render::init() {
 	hud = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	cs = Font(XOR("undefeated"), 13, FW_MEDIUM, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 	logevent = Font(XOR("Verdana"), 12, FW_DONTCARE, FONTFLAG_DROPSHADOW);
-	indicator = Font(XOR("Small Fonts"), 8, FW_NORMAL, FONTFLAG_OUTLINE);
+	indicator = Font(XOR("calibri"), 28, FW_BOLD, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 	damage = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 	big_point = Font(XOR("Conthrax Sb"), 36, 700, FONTFLAG_ANTIALIAS);
 	big_score = Font(XOR("Conthrax Sb"), 30, FW_NORMAL, FONTFLAG_ANTIALIAS);
