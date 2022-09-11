@@ -851,16 +851,16 @@ bool Aimbot::CanHit(vec3_t start, vec3_t end, LagRecord* record, int box, bool i
 }
 
 bool Aimbot::CheckHitchance(Player* player, const ang_t& angle) {
-	float HITCHANCE_MAX = 100.f;
+	
+	float hc = FLT_MAX;
+
+	constexpr float HITCHANCE_MAX = 100.f;
 	constexpr int   SEED_MAX = 255;
-	if (shoot_next_tick) {
-		HITCHANCE_MAX += 27.f;
-	}
 
 	vec3_t     start{ core.m_shoot_pos }, end, fwd, right, up, dir, wep_spread;
 	float      inaccuracy, spread;
 	CGameTrace tr;
-	size_t     total_hits{ }, needed_hits{ (size_t)std::ceil((g_menu.main.aimbot.hitchance_amount.get() * SEED_MAX) / HITCHANCE_MAX) };
+	int     total_hits{}, needed_hits{ int(float(hc / HITCHANCE_MAX) * SEED_MAX) };
 
 	// get needed directional vectors.
 	math::AngleVectors(angle, &fwd, &right, &up);
@@ -869,10 +869,13 @@ bool Aimbot::CheckHitchance(Player* player, const ang_t& angle) {
 	inaccuracy = core.m_weapon->GetInaccuracy();
 	spread = core.m_weapon->GetSpread();
 
+	if ((g_inputpred.m_perfect_accuracy + 0.0005f) >= inaccuracy)
+		return true;
+
 	// iterate all possible seeds.
-	for (int i{ }; i <= SEED_MAX; ++i) {
-		// get spread.
-		wep_spread = core.m_weapon->CalculateSpread(i, inaccuracy, spread);
+	for (int i{}; i <= SEED_MAX; ++i) {
+		// get spread. wwwaaaaaa
+		wep_spread = core.m_weapon->CalculateSpread(m_static_seeds[i], inaccuracy, spread);
 
 		// get spread direction.
 		dir = (fwd + (right * wep_spread.x) + (up * wep_spread.y)).normalized();
@@ -881,7 +884,7 @@ bool Aimbot::CheckHitchance(Player* player, const ang_t& angle) {
 		end = start + (dir * core.m_weapon_info->m_range);
 
 		// setup ray and trace.
-		g_csgo.m_engine_trace->ClipRayToEntity(Ray(start, end), MASK_SHOT, player, &tr);
+		g_csgo.m_engine_trace->ClipRayToEntity(Ray(start, end), MASK_SHOT_HULL | CONTENTS_HITBOX, player, &tr);
 
 		// check if we hit a valid player / hitgroup on the player and increment total hits.
 		if (tr.m_entity == player && game::IsValidHitgroup(tr.m_hitgroup))

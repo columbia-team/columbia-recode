@@ -957,7 +957,7 @@ public:
 		pen_damage.setup(XOR("penetration crosshair damage"), XOR("pen_damage"));
 		RegisterElement(&pen_damage, 1);
 
-		indicators.setup(XOR("indicators"), XOR("indicators"), { XOR("lby"), XOR("lag compensation"), XOR("ping"), XOR("mindmg override"), ("resolver override"),});
+		indicators.setup(XOR("indicators"), XOR("indicators"), { XOR("lby"), XOR("lag compensation"), XOR("ping"), XOR("mindmg override"), /*("resolver override")*/});
 		RegisterElement(&indicators, 1);
 
 		ind_color.setup(XOR("indicator color"), XOR("ind_color"), colors::ogind);

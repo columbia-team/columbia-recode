@@ -53,6 +53,8 @@ public:
 	void PredictGamePrediction(CMoveData data, CUserCmd* cmd);
 	void RestoreGamePrediction(CUserCmd* cmd);
 
+	float m_perfect_accuracy;
+
 	vec3_t velocity;
 };
 
