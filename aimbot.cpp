@@ -851,8 +851,6 @@ bool Aimbot::CanHit(vec3_t start, vec3_t end, LagRecord* record, int box, bool i
 }
 
 bool Aimbot::CheckHitchance(Player* player, const ang_t& angle) {
-	
-	float hc = FLT_MAX;
 
 	constexpr float HITCHANCE_MAX = 100.f;
 	constexpr int   SEED_MAX = 255;
@@ -860,7 +858,7 @@ bool Aimbot::CheckHitchance(Player* player, const ang_t& angle) {
 	vec3_t     start{ core.m_shoot_pos }, end, fwd, right, up, dir, wep_spread;
 	float      inaccuracy, spread;
 	CGameTrace tr;
-	int     total_hits{}, needed_hits{ int(float(hc / HITCHANCE_MAX) * SEED_MAX) };
+	int     total_hits{}, needed_hits{ int(float(g_menu.main.aimbot.hitchance_amount.get() / HITCHANCE_MAX) * SEED_MAX) };
 
 	// get needed directional vectors.
 	math::AngleVectors(angle, &fwd, &right, &up);
