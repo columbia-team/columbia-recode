@@ -143,8 +143,8 @@ public:
 		correct.setup(XOR("anti-aim correction"), XOR("correct"));
 		RegisterElement(&correct, 1);
 
-		resolver_override.setup(XOR("override resolver"), XOR("resolver_override"));
-		RegisterElement(&resolver_override, 1);
+		//resolver_override.setup(XOR("override resolver"), XOR("resolver_override"));
+		//RegisterElement(&resolver_override, 1);
 
 		baim1.setup(XOR("prefer body aim"), XOR("baim1"), { XOR("always"), XOR("lethal"), XOR("lethal x2"), XOR("fake"), XOR("in air"), XOR("after x misses") });
 		RegisterElement(&baim1, 1);
@@ -825,6 +825,7 @@ public:
 	Checkbox      keybinds;
 	Keybind       thirdperson;
 	Slider		  thirdperson_distance;
+	Colorpicker	  ind_color;
 
 public:
 	void init() {
@@ -959,8 +960,11 @@ public:
 		indicators.setup(XOR("indicators"), XOR("indicators"), { XOR("lby"), XOR("lag compensation"), XOR("ping"), XOR("mindmg override"), ("resolver override"),});
 		RegisterElement(&indicators, 1);
 
-		keybinds.setup(XOR("keybind status"), XOR("keybinds"));
-		RegisterElement(&keybinds, 1);
+		ind_color.setup(XOR("indicator color"), XOR("ind_color"), colors::ogind);
+		RegisterElement(&ind_color, 1);
+
+		//keybinds.setup(XOR("keybind status"), XOR("keybinds"));
+		//RegisterElement(&keybinds, 1);
 
 		grenade_warning.setup(XOR("grenade proximity warning"), XOR("warning_prox"));
 		RegisterElement(&grenade_warning);
@@ -982,7 +986,6 @@ public:
 		tracers_colors.setup(XOR("grenade simulation color"), XOR("tracers_colors"), colors::white);
 		RegisterElement(&tracers_colors, 1);
 		
-
 		thirdperson.setup(XOR("thirdperson"), XOR("thirdperson"));
 		thirdperson.SetToggleCallback(callbacks::ToggleThirdPerson);
 		RegisterElement(&thirdperson, 1);

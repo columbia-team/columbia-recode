@@ -284,7 +284,9 @@ void Core::OnPaint() {
 	}
 
 	DrawHUD();
+
 	g_visuals.IndicateAngles();
+
 	KillFeed();
 
 	// menu goes last.

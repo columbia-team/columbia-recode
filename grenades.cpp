@@ -13,9 +13,6 @@ void Grenades::reset() {
 	m_bounces.clear();
 }
 
-
-
-
 void Grenades::paint() {
 	static CTraceFilterSimple_game filter{};
 	CGameTrace	                   trace;

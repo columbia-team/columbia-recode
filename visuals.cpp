@@ -425,6 +425,43 @@ void Visuals::Spectators() {
 
 
 void Visuals::StatusIndicators() {
+	// bomb variables
+	float       explode_time_diff, dist, range_damage;
+	vec3_t      dst, to_target;
+	std::string bomb = m_last_bombsite.c_str();
+	int         final_damage;
+	std::string time_str, damage_str;
+	explode_time_diff = m_planted_c4_explode_time - g_csgo.m_globals->m_curtime;
+	Color       damage_color;
+
+	// scale our damage
+	static auto scale_damage = [](float damage, int armor_value) {
+		float new_damage, armor;
+
+		if (armor_value > 0) {
+			new_damage = damage * 0.5f;
+			armor = (damage - new_damage) * 0.5f;
+
+			if (armor > (float)armor_value) {
+				armor = (float)armor_value * 2.f;
+				new_damage = damage - armor;
+			}
+
+			damage = new_damage;
+		}
+
+		return std::max(0, (int)std::floor(damage));
+	};
+
+	// calc bomb damage
+	{
+		dst = core.m_local->WorldSpaceCenter();
+		to_target = m_planted_c4_explosion_origin - dst;
+		dist = to_target.length();
+		range_damage = m_planted_c4_damage * std::exp((dist * dist) / ((m_planted_c4_radius_scaled * -2.f) * m_planted_c4_radius_scaled));
+		final_damage = scale_damage(range_damage, core.m_local->m_ArmorValue());
+	}
+
 	// dont do if dead.
 	if (!core.m_processing)
 		return;
@@ -433,16 +470,25 @@ void Visuals::StatusIndicators() {
 	std::vector< Indicator_t > indicators{ };
 
 	// LC
-	if (g_menu.main.visuals.indicators.get(1) && ((core.m_buttons & IN_JUMP) || !(core.m_flags & FL_ONGROUND))) {
+	/*if (g_menu.main.visuals.indicators.get(1) && ((core.m_buttons & IN_JUMP) || !(core.m_flags & FL_ONGROUND))) {
 		Indicator_t ind{ };
 		ind.color = core.m_lagcomp ? 0xff15c27b : Color(255, 255, 255);
 		ind.text = XOR("lc");
 
 		indicators.push_back(ind);
+	}*/
+
+	// LC
+	if (g_menu.main.visuals.indicators.get(1) && ((core.m_buttons & IN_JUMP) || !(core.m_flags & FL_ONGROUND))) {
+		Indicator_t ind{ };
+		ind.color = core.m_lagcomp ? g_menu.main.visuals.ind_color.get() : 0xff0000ff;
+		ind.text = XOR("LC");
+
+		indicators.push_back(ind);
 	}
 
 	// LBY
-	if (g_menu.main.visuals.indicators.get(0)) {
+	/*if (g_menu.main.visuals.indicators.get(0)) {
 		// get the absolute change between current lby and animated angle.
 		float change = std::abs(math::NormalizedAngle(core.m_body - core.m_angle.y));
 
@@ -450,40 +496,79 @@ void Visuals::StatusIndicators() {
 		ind.color = change > 35.f ? 0xff15c27b : Color(255, 255, 255);
 		ind.text = XOR("lbu");
 		indicators.push_back(ind);
+	}*/
+
+	// LBY
+	if (g_menu.main.visuals.indicators.get(0)) {
+		// get the absolute change between current lby and animated angle.
+		float change = std::abs(math::NormalizedAngle(core.m_body - core.m_angle.y));
+
+		Indicator_t ind{ };
+		ind.color = change > 35.f ? g_menu.main.visuals.ind_color.get() : 0xff0000ff;
+		ind.text = XOR("LBY");
+		indicators.push_back(ind);
 	}
 
 	// PING
-	if (g_menu.main.visuals.indicators.get(2)) {
+	/*if (g_menu.main.visuals.indicators.get(2)) {
 		Indicator_t ind{ };
 		ind.color = g_aimbot.m_fake_latency ? 0xff15c27b : Color(255, 255, 255);
 		ind.text = XOR("ping");
 
 		indicators.push_back(ind);
+	}*/
+
+	// PING
+	if (g_menu.main.visuals.indicators.get(2) && g_aimbot.m_fake_latency) {
+		Indicator_t ind{ };
+		ind.color = g_aimbot.m_fake_latency ? g_menu.main.visuals.ind_color.get() : 0xff0000ff;
+		ind.text = XOR("PING");
+
+		indicators.push_back(ind);
 	}
 
 	// DMG
-	if (g_menu.main.visuals.indicators.get(3)) {
+	/*if (g_menu.main.visuals.indicators.get(3)) {
 		Indicator_t ind{ };
 		ind.color = g_aimbot.m_damage_toggle ? 0xff15c27b : Color(255, 255, 255);
 		ind.text = XOR("dmg");
 
 		indicators.push_back(ind);
-	}
+	}*/
 
-	if (g_menu.main.visuals.indicators.get(4)) {
+	// OVERRIDE DMG
+	if (g_menu.main.visuals.indicators.get(3) && g_aimbot.m_damage_toggle) {
 		Indicator_t ind{ };
-		ind.color = (g_input.GetKeyState(g_menu.main.aimbot.resolver_override.get())) ? 0xff15c27b : Color(255, 255, 255);
-		ind.text = XOR("override");
+		ind.color = g_aimbot.m_damage_toggle ? g_menu.main.visuals.ind_color.get() : 0xffffffff;
+		ind.text = XOR("DMG");
 
 		indicators.push_back(ind);
 	}
 
-	// BAIM
+	// OVERRIDE RESOLVER
+	/*if (g_menu.main.visuals.indicators.get(4) && g_menu.main.aimbot.resolver_override) {
+		Indicator_t ind{ };
+		ind.color = g_menu.main.aimbot.resolver_override ? g_menu.main.visuals.ind_color.get() : 0xffffffff;
+		ind.text = XOR("OVERRIDE");
 
-	if (g_menu.main.visuals.indicators.get(6) && g_aimbot.m_baim_toggle) {
+		indicators.push_back(ind);
+	}*/
+
+	// BAIM
+	/*if (g_menu.main.visuals.indicators.get(6) && g_aimbot.m_baim_toggle) {
 		Indicator_t ind{ };
 		ind.color = 0xff15c27b;
 		ind.text = XOR("baim");
+
+		indicators.push_back(ind);
+	}*/
+
+	// BAIM
+	if (g_menu.main.visuals.indicators.get(5) && g_aimbot.m_baim_toggle) {
+
+		Indicator_t ind{ };
+		ind.color = g_aimbot.m_baim_toggle ? g_menu.main.visuals.ind_color.get() : 0xff0000ff;
+		ind.text = XOR("BAIM");
 
 		indicators.push_back(ind);
 	}
@@ -495,12 +580,130 @@ void Visuals::StatusIndicators() {
 	Color color155 = { 0, 0, 0, 0 };
 
 	// iterate and draw indicators.
-	for (size_t i{ }; i < indicators.size(); ++i) {
+	/*for (size_t i{}; i < indicators.size(); ++i) {
 		auto& indicator = indicators[i];
 
 		render::gradient1337(0, core.m_height - 540 - (14 * i), 35, render::indicator.size(indicator.text).m_height + 1, color144, color155); //(20 * I)
 		render::rect_filled(0, core.m_height - 540 - (14 * i), 3, render::indicator.size(indicator.text).m_height + 1, indicator.color);
 		render::indicator.string(5, core.m_height - 540 - (14 * i) + 1, indicator.color, indicator.text);
+	}*/
+
+	for (size_t i{ }; i < indicators.size(); ++i) {
+		auto& indicator = indicators[i];
+
+		if (final_damage >= 0 && m_c4_planted && g_menu.main.visuals.indicators.get(6)) { // if c4 not planted, keep above chat.
+			render::FontSize_t size = render::indicator.size(indicator.text);
+			render::gradient1337(12, core.m_height - 415 - (35 * i), 13, size.m_height + 2, Color{ 0,0,0,27 }, Color{ 0,0,0,172 }, true);
+			render::gradient1337(25, core.m_height - 415 - (35 * i), size.m_width - 3, size.m_height + 2, Color{ 0,0,0,172 }, Color{ 0,0,0,27 }, true);
+			render::indicator.string(20, core.m_height - 415 - (35 * i), indicator.color, indicator.text);
+		}
+		else if (m_c4_planted && g_menu.main.visuals.indicators.get(6)) { // if c4 planted, move all indicators up one so bomb is at the bottom
+			render::FontSize_t size = render::indicator.size(indicator.text);
+			render::gradient1337(12, core.m_height - 380 - (35 * i), 13, size.m_height + 2, Color{ 0,0,0,27 }, Color{ 0,0,0,172 }, true);
+			render::gradient1337(25, core.m_height - 380 - (35 * i), size.m_width - 3, size.m_height + 2, Color{ 0,0,0,172 }, Color{ 0,0,0,27 }, true);
+			render::indicator.string(20, core.m_height - 380 - (35 * i), indicator.color, indicator.text);
+		}
+		else if (!m_c4_planted) { // if c4 planted and bomb will damage you [any damage OVER zero] move indicators up two
+			render::FontSize_t size = render::indicator.size(indicator.text);
+			render::gradient1337(12, core.m_height - 345 - (35 * i), 13, size.m_height + 2, Color{ 0,0,0,27 }, Color{ 0,0,0,172 }, true);
+			render::gradient1337(25, core.m_height - 345 - (35 * i), size.m_width - 3, size.m_height + 2, Color{ 0,0,0,172 }, Color{ 0,0,0,27 }, true);
+			render::indicator.string(20, core.m_height - 345 - (35 * i), indicator.color, indicator.text);
+		}
+
+	}
+
+
+	// BOMB
+	if (g_menu.main.visuals.indicators.get(5) && m_c4_planted) {
+		Indicator_t         ind{ };
+
+		// text funcs
+		if (core.m_local->m_iHealth() <= final_damage) {
+			damage_str = tfm::format(XOR("FATAL"));
+		}
+		else if (final_damage > 1) {
+			damage_str = tfm::format(XOR("%i"), final_damage);
+		}
+
+		// text funcs
+		damage_color = (final_damage < core.m_local->m_iHealth()) ? colors::white : colors::red;
+		std::string damage1337 = tfm::format(XOR("%i"), final_damage);
+
+		// render da damage
+		if (core.m_local->m_iHealth() <= final_damage) {
+			render::FontSize_t size = render::indicator.size("FATAL");
+			render::gradient1337(12, core.m_height - 345, 13, size.m_height + 2, Color{ 0,0,0,27 }, Color{ 0,0,0,172 }, true);
+			render::gradient1337(25, core.m_height - 345, size.m_width - 3, size.m_height + 2, Color{ 0,0,0,172 }, Color{ 0,0,0,27 }, true);
+			render::indicator.string(20, core.m_height - 345, { 192, 32, 17, 255 }, tfm::format(XOR("FATAL")));
+		}
+		else if (final_damage > 1) {
+			render::FontSize_t size = render::indicator.size(damage1337);
+			render::gradient1337(12, core.m_height - 345, 13, size.m_height + 2, Color{ 0,0,0,27 }, Color{ 0,0,0,172 }, true);
+			render::gradient1337(25, core.m_height - 345, size.m_width - 3, size.m_height + 2, Color{ 0,0,0,172 }, Color{ 0,0,0,27 }, true);
+			render::indicator.string(20, core.m_height - 345, { 255, 255, 152, 255 }, tfm::format(XOR("- %iHP"), damage1337));
+		}
+
+		// bomb info stuff
+		std::string timer1337 = tfm::format(XOR("%s - %.1fs"), bomb.substr(0, 1), explode_time_diff); // bomb info stuff
+
+		// render da site
+		if (final_damage >= 0 && m_c4_planted) {
+			render::FontSize_t size = render::indicator.size(timer1337);                                                                     // get text size
+			render::gradient1337(12, core.m_height - 380, 13, size.m_height + 2, Color{ 0,0,0,27 }, Color{ 0,0,0,172 }, true);				 // gotta do this all in function haha kms
+			render::gradient1337(25, core.m_height - 380, size.m_width - 3, size.m_height + 2, Color{ 0,0,0,172 }, Color{ 0,0,0,27 }, true); // gotta do this all in function haha kms
+			render::indicator.string(20, core.m_height - 380, Color(212, 207, 204, 255), timer1337);
+		}
+		else if (m_c4_planted) {
+			render::FontSize_t size = render::indicator.size(timer1337);                                                                     // get text size
+			render::gradient1337(12, core.m_height - 345, 13, size.m_height + 2, Color{ 0,0,0,27 }, Color{ 0,0,0,172 }, true);				 // gotta do this all in function haha kms
+			render::gradient1337(25, core.m_height - 345, size.m_width - 3, size.m_height + 2, Color{ 0,0,0,172 }, Color{ 0,0,0,27 }, true); // gotta do this all in function haha kms
+			render::indicator.string(20, core.m_height - 345, Color(212, 207, 204, 255), timer1337);
+		}
+	}
+
+	auto local_player = core.m_local;
+	int screen_width, screen_height;
+	g_csgo.m_engine->GetScreenSize(screen_width, screen_height);
+
+	static float next_lby_update[65];
+	//static float last_lby[65];
+
+	const float curtime = g_csgo.m_globals->m_curtime;
+
+	//if (local_player->GetVelocity().Length2D() > 0.1 && !global::is_fakewalking)
+	//    return;
+
+	if (local_player->m_vecVelocity().length_2d() > 0.1f && !g_input.GetKeyState(g_menu.main.movement.fakewalk.get()))
+		return;
+
+	CCSGOPlayerAnimState* state = core.m_local->m_PlayerAnimState();
+	if (!state)
+		return;
+	static float last_lby[65];
+	if (last_lby[local_player->index()] != local_player->m_flLowerBodyYawTarget())
+	{
+		last_lby[local_player->index()] = local_player->m_flLowerBodyYawTarget();
+		next_lby_update[local_player->index()] = curtime + 1.125f + g_csgo.m_globals->m_interval;
+	}
+
+	if (next_lby_update[local_player->index()] < curtime)
+	{
+		next_lby_update[local_player->index()] = curtime + 1.125f;
+	}
+
+	float time_remain_to_update = next_lby_update[local_player->index()] - local_player->m_flSimulationTime();
+	float time_update = next_lby_update[local_player->index()];
+	float fill = 0;
+	fill = (((time_remain_to_update)));
+	static float add = 0.000f;
+	add = 1.125f - fill;
+
+	float change1337 = std::abs(math::NormalizedAngle(core.m_body - core.m_angle.y));
+
+	Color color1337 = { 255,0,0,255 };
+
+	if (change1337 > 35.f) {
+		color1337 = { 124,195,13,255 };
 	}
 }
 

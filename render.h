@@ -89,7 +89,7 @@ namespace render {
 	void rect_outlined(int x, int y, int w, int h, Color color, Color color2);
 	void circle(int x, int y, int radius, int segments, Color color);
 	void gradient(int x, int y, int w, int h, Color color1, Color color2);
-	void gradient1337(int x, int y, int w, int h, Color color1, Color color2);
+	void gradient1337(int x, int y, int w, int h, Color color1, Color color2, bool horizontal = false);
 	void sphere(vec3_t origin, float radius, float angle, float scale, Color color);
 	void sphere2(vec3_t origin, float radius, float angle, float scale, Color color);
 	void triangle(vec2_t point_one, vec2_t point_two, vec2_t point_three, Color color);

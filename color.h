@@ -87,4 +87,5 @@ namespace colors {
 	static Color transparent_green{ 0, 255, 0, 200 };
 	static Color transparent_yellow{ 255, 255, 0, 200 };
 	static Color transparent_red{ 255, 0, 0, 200 };
+	static Color ogind{ 124, 195, 13, 255 };
 }

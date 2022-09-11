@@ -37,7 +37,7 @@ void render::init() {
 	hud = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_ANTIALIAS);
 	cs = Font(XOR("undefeated"), 13, FW_MEDIUM, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 	logevent = Font(XOR("Verdana"), 12, FW_DONTCARE, FONTFLAG_DROPSHADOW);
-	indicator = Font( XOR( "Arial" ), 14, FW_MEDIUM, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW );
+	indicator = Font(XOR("Small Fonts"), 8, FW_NORMAL, FONTFLAG_OUTLINE);
 	damage = Font(XOR("Verdana"), 12, FW_NORMAL, FONTFLAG_ANTIALIAS | FONTFLAG_DROPSHADOW);
 	big_point = Font(XOR("Conthrax Sb"), 36, 700, FONTFLAG_ANTIALIAS);
 	big_score = Font(XOR("Conthrax Sb"), 30, FW_NORMAL, FONTFLAG_ANTIALIAS);
@@ -205,12 +205,11 @@ void render::TexturedPolygon(int n, std::vector< Vertex > vertice, Color color) 
 }
 
 
-void render::gradient1337(int x, int y, int w, int h, Color color1, Color color2) {
+void render::gradient1337(int x, int y, int w, int h, Color color1, Color color2, bool horizontal) {
 	g_csgo.m_surface->DrawSetColor(color1);
-	g_csgo.m_surface->DrawFilledRectFade(x, y, x + w, y + h, color1.a(), 0, true);
-
+	g_csgo.m_surface->DrawFilledRectFade(x, y, x + w, y + h, color1.a(), 0, horizontal);
 	g_csgo.m_surface->DrawSetColor(color2);
-	g_csgo.m_surface->DrawFilledRectFade(x, y, x + w, y + h, 0, color2.a(), true);
+	g_csgo.m_surface->DrawFilledRectFade(x, y, x + w, y + h, 0, color2.a(), horizontal);
 }
 
 bool render::WorldToScreen(const vec3_t& world, vec2_t& screen) {
