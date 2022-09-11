@@ -273,7 +273,7 @@ public:
 	Player* m_target;
 	ang_t      m_angle;
 	vec3_t     m_aim;
-	float      m_damage;
+	float      m_damage, m_hc;
 	float      m_hitbox;
 	LagRecord* m_record;
 
@@ -283,16 +283,17 @@ public:
 	bool       m_fake_latency;
 	bool can_hit;
 
-	bool m_stop;
+	bool	m_stop;
 	bool	m_damage_toggle;
 	bool	m_baim_toggle;
+	bool	m_hc_precision;
 	
 	// toggle double-tap boolean
 	bool       m_double_tap;
 
 	// LIPTON TEA
 	bool	   m_lipton;
-		
+
 public:
 	__forceinline void reset() {
 		// reset aimbot data.
@@ -329,6 +330,7 @@ public:
 	// aimbot.
 	void init();
 	void StripAttack();
+	void handle_targets();
 	void think();
 	void find();
 	bool CanHit(vec3_t start, vec3_t end, LagRecord* record, int box, bool in_shot, BoneArray* bones);

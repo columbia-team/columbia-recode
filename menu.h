@@ -41,6 +41,7 @@ public:
 	Keybind       override_dmg_key;
 	Slider        override_dmg_value;
 	Keybind       resolver_override;
+	Checkbox	  test;
 	Keybind		  doubletap;
 	Keybind		  fakeduck;
 
@@ -174,6 +175,9 @@ public:
 		override_dmg_value.setup(" ", XOR("dmg_override"), 1.f, 100.f, false, 0, 1.f, 1.f, XOR(L"hp"));
 		override_dmg_value.AddShowCallback(callbacks::IsOverrideDamage);
 		RegisterElement(&override_dmg_value, 1);
+
+		//test.setup("test", XOR("test"));
+		//RegisterElement(&test, 1);
 
 		//doubletap.setup(XOR("double tap"), XOR("doubletap"));
 		//doubletap.SetToggleCallback(callbacks::ToggleDT);

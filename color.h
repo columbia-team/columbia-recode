@@ -67,6 +67,12 @@ public:
 	__forceinline uint8_t& a() { return m_a; }
 	__forceinline uint32_t& rgba() { return m_rgba; }
 
+	Color blend(Color _tmp, float fraction) {
+		float r_d = r() - _tmp.r(), g_d = g() - _tmp.g(), b_d = b() - _tmp.b(), a_d = a() - _tmp.a();
+
+		return Color(r() - (r_d * fraction), g() - (g_d * fraction), b() - (b_d * fraction), a() - (a_d * fraction));
+	}
+
 	// operators.
 	__forceinline operator uint32_t() { return m_rgba; }
 };

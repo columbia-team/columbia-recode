@@ -39,6 +39,40 @@ void Core::Watermark() {
 
 void Core::DrawHUD() {
 	core.Watermark();
+
+#ifdef DEV
+	if (m_processing && g_csgo.m_engine->IsInGame()) {
+
+		struct debug_t {
+			std::string info;
+			Color clr;
+
+			debug_t(std::string i, Color a = colors::white) {
+				info = i; clr = a;
+			}
+		};
+		std::deque<debug_t> log;
+
+		log.push_front(debug_t(tfm::format("fps: %s/300", get_fps())));
+
+		auto data = !g_aimbot.m_target ? g_aimbot.m_targets.empty() ? nullptr : g_aimbot.m_targets.front() : &g_aimbot.m_players[g_aimbot.m_target->index()];
+		if (data) {
+
+			auto _lt_f{ 1.f - (g_menu.main.aimbot.test.get() / g_aimbot.m_targets.size()) };
+			log.push_front(debug_t(tfm::format("accuracy: %sdmg | %s/%s", std::to_string(int(g_aimbot.m_damage)), std::to_string(int(g_aimbot.m_hc)), std::to_string((g_aimbot.m_hc_precision ? 128 : 256)))));
+			log.push_front(debug_t(tfm::format("targets: %s/%s", std::to_string(g_aimbot.m_targets.size()),(Color(255, 100, 100), _lt_f))));
+
+			int i{ 0 };
+			for (auto& l : log) {
+
+				render::menu_shade.string(m_width * .65f, 8 + (i * 15), l.clr, l.info/*, render::ALIGN_RIGHT*/);
+				i++;
+
+			}
+		}
+	}
+#endif // DEV
+
 }
 
 void Core::UnlockHiddenConvars()

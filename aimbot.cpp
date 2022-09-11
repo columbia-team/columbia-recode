@@ -548,6 +548,7 @@ void Aimbot::init() {
 	m_damage = 0.f;
 	m_record = nullptr;
 	m_stop = false;
+	m_hc_precision = false;
 
 	m_best_dist = std::numeric_limits< float >::max();
 	m_best_fov = 180.f + 1.f;
@@ -851,14 +852,16 @@ bool Aimbot::CanHit(vec3_t start, vec3_t end, LagRecord* record, int box, bool i
 }
 
 bool Aimbot::CheckHitchance(Player* player, const ang_t& angle) {
-
-	constexpr float HITCHANCE_MAX = 100.f;
+	float HITCHANCE_MAX = 100.f;
 	constexpr int   SEED_MAX = 255;
+	if (shoot_next_tick) {
+		HITCHANCE_MAX += 27.f;
+	}
 
 	vec3_t     start{ core.m_shoot_pos }, end, fwd, right, up, dir, wep_spread;
 	float      inaccuracy, spread;
 	CGameTrace tr;
-	int     total_hits{}, needed_hits{ int(float(g_menu.main.aimbot.hitchance_amount.get() / HITCHANCE_MAX) * SEED_MAX) };
+	size_t     total_hits{ }, needed_hits{ (size_t)std::ceil((g_menu.main.aimbot.hitchance_amount.get() * SEED_MAX) / HITCHANCE_MAX) };
 
 	// get needed directional vectors.
 	math::AngleVectors(angle, &fwd, &right, &up);
@@ -867,13 +870,10 @@ bool Aimbot::CheckHitchance(Player* player, const ang_t& angle) {
 	inaccuracy = core.m_weapon->GetInaccuracy();
 	spread = core.m_weapon->GetSpread();
 
-	if ((g_inputpred.m_perfect_accuracy + 0.0005f) >= inaccuracy)
-		return true;
-
 	// iterate all possible seeds.
-	for (int i{}; i <= SEED_MAX; ++i) {
-		// get spread. wwwaaaaaa
-		wep_spread = core.m_weapon->CalculateSpread(m_static_seeds[i], inaccuracy, spread);
+	for (int i{ }; i <= SEED_MAX; ++i) {
+		// get spread.
+		wep_spread = core.m_weapon->CalculateSpread(i, inaccuracy, spread);
 
 		// get spread direction.
 		dir = (fwd + (right * wep_spread.x) + (up * wep_spread.y)).normalized();
@@ -882,7 +882,7 @@ bool Aimbot::CheckHitchance(Player* player, const ang_t& angle) {
 		end = start + (dir * core.m_weapon_info->m_range);
 
 		// setup ray and trace.
-		g_csgo.m_engine_trace->ClipRayToEntity(Ray(start, end), MASK_SHOT_HULL | CONTENTS_HITBOX, player, &tr);
+		g_csgo.m_engine_trace->ClipRayToEntity(Ray(start, end), MASK_SHOT, player, &tr);
 
 		// check if we hit a valid player / hitgroup on the player and increment total hits.
 		if (tr.m_entity == player && game::IsValidHitgroup(tr.m_hitgroup))

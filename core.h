@@ -96,6 +96,9 @@ public:
 	float            m_poses[24];
 	float			 m_left_thickness[64], m_right_thickness[64], m_at_target_angle[64];
 	bool             m_share_land;
+	int get_fps() {
+		return (int)std::round(1.f / g_csgo.m_globals->m_frametime);
+	}
 
 	// active weapon variables.
 	Weapon* m_weapon;
